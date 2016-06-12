@@ -14,6 +14,9 @@ public:
     bool isEmpty() const{
         return head == nullptr;
     }
+
+	int Size() const { return sz; };
+
     void insert(const T & data){
         Node<T> *tmp_node = new Node<T>(data);
         Node<T> *ptr = head;
@@ -36,7 +39,7 @@ public:
             Node<T> *newNode = new Node<T>(data,head);
             head = newNode;
             sz++;
-            SLinkedList::printLst();
+			SLinkedList::printLst();
         }
         else if(pos > sz){
             SLinkedList::insert(data);
@@ -74,13 +77,18 @@ public:
         SLinkedList::printLst();
     }
 
-    void printLst() const{
+    void printLst() const
+	{
         Node<T> *ptr = head;
-        while(ptr !=nullptr){
-            cout << "Node[" << ptr->ID <<"]=" << ptr->data << "-->";
+		int counter = 0;
+
+        while(ptr != nullptr)
+		{
+            cout << /*"Node[" << counter++ << "]=" <<*/ ptr->data << " --> ";
             ptr = ptr->next;
         }
-        cout << "null" << endl;
+
+        cout << "[NULL]" << endl;
     }
 
     void clear(){
@@ -97,5 +105,4 @@ public:
     T getHeadValue(){
         return head->data;
     }
-
 };

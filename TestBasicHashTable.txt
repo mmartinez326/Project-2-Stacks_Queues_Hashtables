@@ -1,0 +1,28 @@
+// Implement this function in main.cpp
+
+// Before main() -------------------------------------------
+void TestBasicHashTable();
+
+// After main() -------------------------------------------
+void TestBasicHashTable()
+{
+	Hash_Table<int, int> hash_brown;
+
+	hash_brown.insert(29, 29);
+	hash_brown.insert(10, 10);
+	hash_brown.insert(23, 23);
+
+	hash_brown.Display();
+	cout << endl;
+
+	SLinkedList<int> dat = hash_brown.search(10);
+
+	cout << "Key(10).Info:  " << endl;
+	dat.printLst();
+
+	cout << endl;
+
+	cout << "Hash table after delete is called:  " << endl;
+	hash_brown.erase(10);
+	hash_brown.Display();
+}
