@@ -3,52 +3,81 @@
 #include<cassert>
 using namespace std;
 
-template<class T> class SLinkedList{
+template<class Key, class Value> class SLinkedList
+{
 private:
-    Node<T> * head;
+    Node<Key, Value> * head;
     int sz;
 
 public:
-    SLinkedList():head(nullptr), sz(0){
-    }
-    bool isEmpty() const{
+    SLinkedList() :head(nullptr), sz(0)
+	{}
+
+    bool isEmpty() const
+	{
         return head == nullptr;
     }
 
 	int Size() const { return sz; };
 
-    void insert(const T & data){
-        Node<T> *tmp_node = new Node<T>(data);
-        Node<T> *ptr = head;
-        if (ptr == nullptr){
+	~SLinkedList()
+	{
+		// clear();
+	}
+
+	// Accessors -----------------------------------------------------------------
+	Node<Key, Value>* GetHead() const { return head; };
+
+	Value getHeadValue()
+	{
+		return head->data;
+	}
+
+	// Mutators -----------------------------------------------------------------
+    void insert(const Value& data, const Key& dataKey)
+	{
+        Node<Key, Value> *tmp_node = new Node<Key, Value>(data, dataKey);
+        Node<Key, Value> *ptr = head;
+        
+		if (ptr == nullptr)
+		{
             head = tmp_node;
             sz++;
         }
-        else{
-            while(ptr->next != nullptr){
+        
+		else
+		{
+            while(ptr->next != nullptr)
+			{
                 ptr = ptr->next;
             }
-            ptr->next = tmp_node;
+            
+			ptr->next = tmp_node;
             sz++;
         }
         // SLinkedList::printLst();
     }
 
-    void insertBefore(const T & data, int pos){
-        if(pos<=1){
-            Node<T> *newNode = new Node<T>(data,head);
+    void insertBefore(const Value& data, int pos)
+	{
+        if(pos<=1)
+		{
+            Node<Key, Value> *newNode = new Node<Key, Value>(data, head);
             head = newNode;
             sz++;
 			SLinkedList::printLst();
         }
-        else if(pos > sz){
+        else if(pos > sz)
+		{
             SLinkedList::insert(data);
         }
-        else{
+        else
+		{
             int p =1;
-            Node<T> *newNode = new Node<T>(data);
-            Node<T> *ptr = head;
-            while(p!=pos -1){
+            Node<Key, Value> *newNode = new Node<Key, Value>(data);
+            Node<Key, Value> *ptr = head;
+            while(p!=pos -1)
+			{
                 ptr = ptr->next;
                 p++;
             }
@@ -58,13 +87,17 @@ public:
         }
     }
 
-    void del(const T & data){
-        Node<T> *ptr = head;
-        Node<T> *prev = head;
-        while(ptr!=nullptr){
-            if(ptr->data==data){
+    void del(const Value& data)
+	{
+        Node<Key, Value> *ptr = head;
+        Node<Key, Value> *prev = head;
+        while(ptr!=nullptr)
+		{
+            if(ptr->data==data)
+			{
                 if(ptr==head) head = ptr->next;
-                else{
+                else
+				{
                     prev->next=ptr->next;
                     cout << ptr->ID << endl;
                     ptr = prev;
@@ -79,7 +112,7 @@ public:
 
     void printLst() const
 	{
-        Node<T> *ptr = head;
+        Node<Key, Value> *ptr = head;
 		int counter = 0;
 
         while(ptr != nullptr)
@@ -91,18 +124,16 @@ public:
         cout << "[NULL]" << endl;
     }
 
-    void clear(){
-        Node<T> *ptr = head;
-        Node<T> * prev = head;
-        while(ptr!=nullptr){
+    void clear()
+	{
+        Node<Key, Value> *ptr = head;
+        Node<Key, Value> *prev = head;
+        while(ptr!=nullptr)
+		{
             ptr = ptr->next;
             delete prev;
             prev = ptr;
         }
         head = nullptr;
-    }
-
-    T getHeadValue(){
-        return head->data;
     }
 };
