@@ -6,23 +6,45 @@ void TestBasicHashTable();
 // After main() -------------------------------------------
 void TestBasicHashTable()
 {
-	Hash_Table<int, int> hash_brown;
+	Hash_Table<int, int> hash_brown(23, 0.5);
+	int randomSeed = 0;
 
-	hash_brown.insert(29, 29);
-	hash_brown.insert(10, 10);
-	hash_brown.insert(23, 23);
+	cout << "Basic Info ---------------------------------------------" << endl;
+	cout << "hashbrown.ArraySize = " << hash_brown.NumberOfBuckets() << endl << endl;
 
-	hash_brown.Display();
+	cout << "Choose a seed for the random # generator.  Use -1 for linear sequence:  ";
+	cin >> randomSeed;
+	cin.ignore();
+	srand((randomSeed < 0 ? 0 : randomSeed));
+
+	cout << "Performing 100 insertions w/ values between 1 and 5000:  " << endl;
+
+	for (int i = 0; i < 100; i++)
+	{
+		int randomNum = 0;
+
+		if (randomSeed > 0)
+			randomNum = rand() % 5000;
+		else if (randomSeed == -1)
+			randomNum = i;
+
+		hash_brown.insert(randomNum, randomNum);
+	}
+
+	hash_brown.DiplayByKey();
+	cout << endl;
+	hash_brown.DisplayDebugInfo();
 	cout << endl;
 
-	SLinkedList<int> dat = hash_brown.search(10);
+	int searchVal = 1484;
 
-	cout << "Key(10).Info:  " << endl;
-	dat.printLst();
-
-	cout << endl;
-
-	cout << "Hash table after delete is called:  " << endl;
-	hash_brown.erase(10);
-	hash_brown.Display();
+	try
+	{
+		int dat = hash_brown.search(searchVal);
+		cout << "Key(" << searchVal << ") = " << dat << endl;
+	}
+	catch (const underflow_error& e)
+	{
+		cerr << e.what() << endl;
+	}
 }
