@@ -1,6 +1,6 @@
 #include <iostream>
 #include "Hash_Table.h"
-#include "Queue.h"
+#include "DynQueue.h"
 #include "Stack.h"
 
 void TestBasicHashTable();
