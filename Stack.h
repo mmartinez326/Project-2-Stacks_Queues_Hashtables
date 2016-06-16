@@ -1,5 +1,8 @@
 #include <iostream>
 #include <cmath>
+#include <stdexcept>
+
+using namespace std;
 
 template <class type> class Stack {
 private:
@@ -44,10 +47,22 @@ public:
 	{
 		if (empty()) {cout << "The Stack is empty (Location: display)" << endl;}
 		else {
-			for (int n=top_of_array; n >= 0; n--)
+			Stack<type> *temp = new Stack (arraySize);
+
+			while(!empty())
 			{
-				cout << this->info[n];
+				type data = pop();
+				cout << data;
+				temp->Push(data);
 			}
+			while (!temp->empty())
+			{
+				type data = temp->pop();
+				this->Push(data);
+			}
+			delete temp;
+			cout << endl;
+
 		}
 	}
 
@@ -56,25 +71,7 @@ public:
 
 	void Push (type const &data) 
 	{
-		if (count == arraySize) //double size of array
-		{
-			int newSize = 0;
-			newSize = (arraySize * 2);
-			type *tmp;
-			tmp = new type[newSize];
-			copy(info, info + arraySize, tmp);
-
-			info = new type[newSize];
-			//initialize new values
-			for (int i=0; i< newSize; i++) 
-			{
-				this->info[i] = 0;
-			}
-			copy(tmp, tmp + arraySize, info);
-
-			arraySize = newSize;
-			cout << "Stack size was doubled" << endl;
-		}
+		ResizeStacks(0);
 	
 		top_of_array++;
 		info[top_of_array] = data;
@@ -85,75 +82,31 @@ public:
 	{
 		if (empty()) {throw underflow_error ("The Stack is empty (Location: pop)");}
 		else 
-		{
-		double size_comparison = 0;
-		double c = count;
-		double s = arraySize;
-		size_comparison = c/s;
-
-		if (((size_comparison) <= 0.25) && (arraySize>initialSize)) //Half the array size
-		{
-			int newSize = 0;
-			newSize = (arraySize/2);
-			type *tmp;
-			tmp = new type[newSize];
-			copy(info, info + arraySize, tmp);
-
-			info = new type[newSize];
-			//initialize new values
-			for (int i=0; i< newSize; i++) 
-			{
-				this->info[i] = 0;
-			}
-			copy(tmp, tmp + newSize, info);
-
-			arraySize = newSize;
-			cout << endl << "Stack size was halfed" << endl;
-
-		}
-
+		{	
 			type tmp = this->top();
 			this->info[top_of_array] = 0;
 			count--;
 			top_of_array--;
+			
+			ResizeStacks(1);
 			return tmp;
-		
 		}
 	
-	//If, after the element is removed, the array is 1/4 full and the array size is greater than the initial size, 
-	//the size of the array is halved. This may throw a underflow exception
 	}
 
 	void clear() 
 	{
 		if (empty()) {cout << "The Stack is empty" << endl;}
 		else {
-			for (int n=count; n > 0; n--)
-			{
-				this->info[n] = 0;
-				count--;
-				top_of_array--;
-				//this->pop();
-			}
-			
-			if (arraySize != initialSize)		//Array size is changed to initial size
-			{
-			int newSize = initialSize;
-			type *tmp;
-			tmp = new type[newSize];
-			copy(info, info + arraySize, tmp);
 
-			info = new type[newSize];
-			//initialize new values
-			for (int i=0; i< newSize; i++) 
-			{
-				this->info[i] = 0;
-			}
-			copy(tmp, tmp + newSize, info);
-
-			arraySize = newSize;
+			delete [] info;
+			count = 0;
+			top_of_array = -1;
+			arraySize = initialSize;
+		
 			cout << endl << "Stack size was resized to inital size" << endl;
-			}
+			
+			info = new type [initialSize];
 		}
 		
 	}
@@ -161,7 +114,7 @@ public:
 	
 	//If, after the element(s) is/are removed, the array is 1/4 full and the array size is greater than the initial size, 
 	//the size of the array is halved. Return the number of elements that were deleted. 
-	int erase(type const &data) 
+int erase(type const &data) 
 	{
 		if (empty()) {throw underflow_error ("The Stack is empty (Location: erase)");}
 		else
@@ -199,10 +152,21 @@ public:
 
 
 		//Check if after deleted array needs to be halfed
+		ResizeStacks(1);
+
+		return numDeleted;
+	}
+	}
+
+private:
+void ResizeStacks(const double& n)
+{
+	if (n==1){
 		double size_comparison = 0;
 		double c = count;
 		double s = arraySize;
 		size_comparison = c/s;
+		
 		if (((size_comparison) <= 0.25) && (arraySize>initialSize)) //Half the array size
 		{
 			int newSize = 0;
@@ -223,10 +187,34 @@ public:
 			cout << endl << "Stack size was halfed (erase)" << endl;
 
 		}
-
-		return numDeleted;
-	}
 	}
 
 
+		//-----------------------------------------------------------------------------------//
+	else
+	{
+		//Double Stack Size
+		if (count == arraySize) //double size of stack
+		{
+			int newSize = 0;
+			newSize = (arraySize * 2);
+			type *tmp;
+			tmp = new type[newSize];
+			copy(info, info + arraySize, tmp);
+
+			info = new type[newSize];
+			//initialize new values
+			for (int i=0; i< newSize; i++) 
+			{
+				this->info[i] = 0;
+			}
+			copy(tmp, tmp + arraySize, info);
+
+			arraySize = newSize;
+			cout << "Stack size was doubled" << endl;
+		}
+
+	}
+
+	}
 };
