@@ -1,3 +1,6 @@
+#ifndef DYNQUEUE_H
+#define DYNQUEUE_H
+
 #include <iostream>
 #include <stdexcept>
 
@@ -11,28 +14,26 @@ private:
 	int itail ; // index of the last item.
 	int count ; // count of items in array.
 	int initialSize ; // initial size of array - what we started off with.
-	int arraySize ; // the current array size.
+	int arraySize ; // the current array size.  the end of index is arraySize - 1.
 
 public:
 
-	DynQueue(int n = 13)
+	DynQueue(int n = 13) // O(1).
 	{
-		if (n <= 0)
+		if (n <= 0) // has to be at lease 1.
 			n = 1 ;
 		
 		ihead = 0 ;
 		itail = 0 ;
-		
-		array = new type[n] ; // new array.
-
-		count = 0 ;
+		array = new type[n] ; // new array , index from 0 to n - 1.
+		count = 0 ; // empty array.
 		initialSize = n ;
 		arraySize = n ;
 	}
 
-	~DynQueue(){delete[] array ; } // do this later.
+	~DynQueue(){delete[] array ; } // O(1).
 
-	type front() const // returns first in queue.
+	type front() const // returns first in queue.  O(1).
 	{	
 		if (this->empty())
 			throw std::underflow_error("front(): the list is empty - underflow_error.") ;
@@ -40,7 +41,7 @@ public:
 			return array[ihead] ; 
 	} 
 
-	type back() const // returns last in queue.
+	type back() const // returns last in queue.  O(1).
 	{	
 		if (this->empty())
 			throw std::underflow_error("back(): the list is empty - underflow_error.") ;
@@ -48,9 +49,9 @@ public:
 			return array[itail] ; 
 	} 
 
-	int size() const {return count ; } // returns number of elements currently in array.
+	int size() const {return count ; } // returns number of elements currently in array.  O(1).
 
-	bool empty() const // is this array empty?
+	bool empty() const // is this array empty?  O(1).
 	{
 		if (count == 0)
 			return true ;
@@ -58,366 +59,264 @@ public:
 			return false ; 
 	}
 
-	int capacity() const {return arraySize ; } // returns current array size.
+	int capacity() const {return arraySize ; } // returns current array size.  O(1).
 
-	void display() // displays from the front to the back.
-	{
-		if (count == 0)
-		{
-			std::cout << "the list is empty.  nothing to display." << std::endl ;
-		}
+	void display() // displays from the front to the back.  O(n).
+	{	// creates a temporary array.  copy all elements of array to temp_array via dequeue_display() , and output each element.  sets temp_array as array , and reset all indexes to starting values.
+		if (this->empty())
+			std::cout << "display(): the queue is empty and there is nothing to display." << std::endl << std::endl ;
 
 		else
 		{
-			int count_temp = count ;
-			int i = 1 ;
-			int working_index = 0 ;
-			type *temp_array = new type[arraySize] ; // creates a new array.
+			std::cout << "display(): " << std::endl << std::endl ;
 
-			while (working_index <= itail) // copies the original array to a temp_array.
+			type *temp_array = new type[arraySize] ;
+			int k = 0 ;
+			int i = ihead ;
+			int temp_ihead = ihead ;
+			int temp_itail = itail ;
+			int temp_count = count ;
+
+			while (!this->empty())
 			{
-				temp_array[working_index] = array[working_index] ;
-				working_index++ ;
-			}
-
-			// temp_array is now the same as array.
-
-			while (count_temp > 0) // as long as there are still items in the queue , keep dequeueing.
-			{
-				working_index = 1 ;
-				std::cout << i << ": " << temp_array[0] << std::endl ; // print out first item in queue.
+				temp_array[i] = this->dequeue_display() ;
+				std::cout << "    " << k + 1 << ": " << temp_array[i] << std::endl ;
 				i++ ;
+				k++ ;
 
-				while (working_index <= count_temp - 1) // creates new array without first item.
-				{
-					temp_array[working_index - 1] = temp_array[working_index] ; // creates new array minus first item.
-					working_index++ ;
-				}
+				if (i > arraySize - 1)
+					i = 0 ;
 
-				count_temp-- ;
 			}
+
+			array = temp_array ;
+			ihead = temp_ihead ;
+			itail = temp_itail ;
+			count = temp_count ;
+
+			std::cout << std::endl ;
 		}
 
-		std::cout << std::endl ;
+		return ;
 	}
 
-	void enqueue(type const &data) // inserts a new element at the back of the queue.  follow capacity rules.
-	{
-		if (count + 1 > arraySize) // if array is full , double it , then proceed.
+	void enqueue(type const &data) // inserts a new element at the back of the queue.  follows capacity rules.  worst case O(n) , on average O(1).
+	{      
+		if (count + 1 > arraySize) // resizing array by creating new array and copying all elements over.  worst case scenario O(n).
 		{
 			type *new_array = new type[arraySize * 2] ; // new array 2x bigger.
-			int working_index = 0 ;
+			int working_index = ihead ;
+			int i = 0 ;
 
-			while (working_index <= itail)
+			while (i <= count - 1) // copy old array to new array.  O(n).
 			{
-				new_array[working_index] = array[working_index] ;
-				working_index++ ;
+				new_array[i] = array[working_index] ;
+				// std::cout << "new_array[" << i << "] = array[" << working_index << "] = " << array[working_index] << std::endl ;
+
+				if (working_index + 1 > arraySize - 1)
+					working_index = 0 ;
+
+				else
+					working_index++ ;
+
+				i++ ;
+				// std::cout << i << std::endl ;
 			}
 
 			array = new_array ;
+			ihead = 0 ;
+			itail = count - 1 ;
 			arraySize = arraySize * 2 ;
 			std::cout << "enqueue(): array ceiling reached , doubled array size to " << arraySize << ".  continuing equeue()..."<< std::endl << std::endl ;
 		}
-		
-		if (count == 0) // if queue is empty.
-		{
 
+		// everything after this point will be average case.
+		// we can assume that there will be enough size in the array for the new item.
+
+		if (count == 0) // this is when the array is empty.
+		{
 			array[0] = data ;
 			count++ ;
-			std::cout << "enqueue(): queued " << data << std::endl << std::endl ;
-			return ;
-		}
-
-		else // add to queue normal.
-		{
-			array[itail + 1] = data ;
-			itail++ ;
-			count++ ;
-			std::cout << "enqueue(): queued " << data << std::endl << std::endl ;
-			return ;
-		}
-	} 
-
-	type dequeue() // removes element from front of queue.  follow capacity rules.  returns the deleted item.
-	{
-		try
-		{
-			if (this->empty())
-				throw std::underflow_error("dequeue(): the list is empty - underflow_error.") ;
-			else
-			{
-				type temp_deleted = array[0] ; // for the return.
-
-				if (count - 1 <= (arraySize / 2) && (arraySize / 2) >= initialSize) // dequeue with size reduction.
-				{
-					type *new_array = new type[arraySize / 2] ;
-					int working_index = 1 ;
-
-					while (working_index <= itail) // creates new array without first item.
-					{
-						new_array[working_index - 1] = array[working_index] ;
-						working_index++ ;
-					}
-
-					count-- ;
-					array = new_array ;
-					arraySize = arraySize / 2 ;
-					// std::cout << "dequeue(): array size reduced to " << arraySize << ".  continuing dequeue()..."<< std::endl << std::endl ;
-				}
-
-				else // dequeue without size reduction.
-				{
-					type *new_array = new type[arraySize] ;
-					int working_index = 1 ;
-
-					while (working_index <= itail) // creates new array without first item.
-					{
-						new_array[working_index - 1] = array[working_index] ;
-						working_index++ ;
-					}
-
-					count-- ;
-					array = new_array ;
-				}
-
-				if (count == 0 || count == 1) // special case.
-				{
-					ihead = 0 ;
-					itail = 0 ;
-				}
-
-				else
-				{
-					itail-- ;
-				}
-
-				// std::cout << "dequeue(): item " << temp << " has been dequeued." << std::endl << std::endl ;
-
-				return temp_deleted ; 
-			}
-		}
-
-		catch (const std::underflow_error& error)
-		{
-			std::cerr << error.what() << std::endl << std::endl ;
-		}
-	}
-
-	void clear() // removes all elements in queue.  resize to initial size.
-	{
-		while (count != 0)
-		{
-			this->dequeue() ;
-		}
-	}
-
-	int erase(type const &data) // deletes a specific element (all of them) , follows capacity rules.
-	{
-		// iterate through array.
-		// if item matches parameter , create new array minus the matching item.
-		// reduce count.
-		// continue iterating through array from the index before the deleted item.
-		// repeat until end of list.
-		// std::cout << "HERE?" << std::endl ;
-		type *erased_array = new type[arraySize] ;
-		int working_index = 0 ;
-
-		while (working_index <= itail) // copies the original array to a erased_array.
-		{
-			erased_array[working_index] = array[working_index] ;
-			working_index++ ;
-		}
-
-		// erased_array is now a full copy of array.
-
-		int count_temp = count ;
-		int itail_temp = itail ;
-
-		int i = 0 ;
-		int erased = 0 ;
-		working_index = 1 ;
-		int mod = 0 ;
-
-		while (i <= count_temp - 1) // do this until end of array.
-		{
-			if (erased_array[i] == data)
-			{
-				working_index = i + 1 ;
-				// std::cout << "erasing " << erased_array[i] << ", with i = " << i << " and working_index = " << working_index << "." << std::endl ;
-				// working_index = i + 1 ;
-
-				while (working_index <= itail_temp) // creates new array without erased_array[i] ;
-				{
-					erased_array[working_index - 1] = array[working_index + mod] ;
-					working_index++ ;
-				}
-
-				mod++ ;
-				// working_index = i + 1 ;
-				itail_temp-- ;
-				count_temp-- ;
-				erased++ ;
-				i-- ;
-			}
-
-			i++ ;
-			// std::cout << "i = " << i << std::endl ;
-		}
-
-		int temp_arraySize  = arraySize ;
-		bool flag = true ;
-
-		while (flag == true) // resizing.
-		{
-			if (count_temp <= (arraySize / 2) && (arraySize / 2) >= initialSize)
-			{
-				arraySize = arraySize / 2 ;
-			}
-
-			else
-			{
-				flag = false ;
-			} 
-		}
-
-		type *new_array = new type[arraySize] ;
-		working_index = 0 ;
-
-		while (working_index <= itail_temp) // resizing.
-		{
-			new_array[working_index] = erased_array[working_index] ;
-			working_index++ ;
-		}
-
-		// std::cout << std::endl << "temp_arraySize: " << temp_arraySize << std::endl << std::endl ;
-
-		count = count_temp ;
-
-		if (count == 0 || count == 1) // special case.
-		{
 			ihead = 0 ;
 			itail = 0 ;
 		}
 
 		else
 		{
-			itail = itail_temp ;
+			if (itail + 1 > arraySize - 1) // if the new index is larger than the last index of array , loop back around.
+				itail = itail + 1 - arraySize ;
+
+			else // if the next value is still within the range.
+				itail++ ;
+
+			array[itail] = data ;
+			count++ ;
 		}
 
-		array = new_array ;
-		// std::cout << "HERE?" << std::endl ;
-		return erased ;
-	}
+		return ;
+	} 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	// not specified in prompt , for testing purposes.
-
-	int initial_size(){return initialSize ; } // returns initial size.
-
-	void private_output() // prints the private members.
+	type dequeue() // O(1) on average , worst case O(n).
 	{
-		std::cout << "     " << "ihead: " << ihead << std::endl ;
-		std::cout << "     " << "itail: " << itail << std::endl ;
-		std::cout << "     " << "count: " << count << std::endl ;
-		std::cout << "     " << "initialSize: " << initialSize << std::endl ;
-		std::cout << "     " << "arraySize: " << arraySize << std::endl ;
-	}
-
-	void test_suite_1() // displays basic information.
-	{
-
-		std::cout << "test_suite_1(): " << std::endl ;
+		type temp = array[ihead] ;
 
 		if (this->empty())
-			std::cout << "     " << "empty(): list is empty." << std::endl ;
+			throw std::underflow_error("dequeue(): the list is empty - nothing to delete.") ;
 		else
-			std::cout << "     " << "empty(): list contains " << this->size() << " element(s)." << std::endl ;
-
-		try
 		{
-			std::cout << "     " << "front(): " << this->front() << "." << std::endl ;
+			if (ihead + 1 > arraySize - 1)
+				ihead = 0 ;
+
+			else
+				ihead++ ;
+
+			count-- ;
+
+			if (count == 0)
+			{
+				ihead = 0 ;
+				itail = 0 ;
+			}
+
+			// resizing if needed.  worst case scenario , O(n).
+
+			if (count <= arraySize / 2 && arraySize / 2 >= initialSize) // resizing array by creating new array and copying all elements over.  worst case scenario.
+			{
+				type *new_array = new type[arraySize / 2] ; // new array half sized.
+				int working_index = ihead ;
+				int i = 0 ;
+
+				while (i <= count) // copy old array to new array.  O(n).
+				{
+					new_array[i] = array[working_index] ;
+
+					if (working_index + 1 > arraySize - 1)
+						working_index = 0 ;
+
+					else
+						working_index++ ;
+
+					i++ ;
+				}
+
+				array = new_array ;
+				arraySize = arraySize / 2 ;
+				ihead = 0 ;
+				itail = count - 1 ;
+				std::cout << "enqueue(): array floor reached , halved array size to " << arraySize << ".  continuing dequeue()..."<< std::endl << std::endl ;
+			}
+
+			return temp ; // to do.
 		}
-
-		catch (const std::underflow_error& error)
-		{
-			std::cerr << "     " << error.what() << std::endl ;
-		}
-
-		try
-		{
-			std::cout << "     " << "back(): " << this->back() << "." << std::endl ;
-		}
-
-		catch (const std::underflow_error& error)
-		{
-			std::cerr << "     " << error.what() << std::endl ;
-		}
-
-		this->private_output() ;
-
-		std::cout << std::endl ;
 	}
 
-	void temp_display_FIXME() // TEMPORARY TESTING FIX , MUST MAKE A "REAL" DISPLAY USING A TEMPORARY STACK AND POP / DEQUEUE.
+	type dequeue_display() // O(1).  does not contain resizing , for display implementation.
 	{
-		int i = 0 ;
-		std::cout << "temp_display_FIXME(): " << std::endl ;
+		type temp = array[ihead] ;
 
-		while(i <= arraySize - 1)
+		if (this->empty())
+			throw std::underflow_error("dequeue(): the list is empty - nothing to delete.") ;
+		else
 		{
-			std::cout << i + 1 << ": " << array[i] << std::endl ;
-			i++ ;
-		}
+			if (ihead + 1 > arraySize - 1)
+				ihead = 0 ;
 
-		std::cout << std::endl ;
+			else
+				ihead++ ;
+
+			count-- ;
+
+			if (count == 0)
+			{
+				ihead = 0 ;
+				itail = 0 ;
+			}
+
+			return temp ; // to do.
+		}
 	}
 
-	void temp_display_FIXME_short() // TEMPORARY TESTING FIX , MUST MAKE A "REAL" DISPLAY USING A TEMPORARY STACK AND POP / DEQUEUE.
+	void clear() // removes all elements in queue.  resize to initial size.  O(1).
 	{
-		int i = 0 ;
-		std::cout << "temp_display_FIXME_short(): " << std::endl ;
+		type *new_array = new type[initialSize] ;
+		array = new_array ;
+		arraySize = initialSize ;
+		ihead = 0 ;
+		itail = 0 ;
+		count = 0 ;
+	}
 
-		while(i <= count - 1)
+	int erase(type const &data) // deletes a specific element (all of them) , follows capacity rules.  on average , O(n).
+	{
+		type *temp_array = new type[arraySize] ;
+		int j = 0 ;
+		int erased = 0 ;
+		int temp_count = count ;
+
+		if (this->empty())
+			throw std::underflow_error("erase(): the queue is empty and there is nothing to erase.") ;
+
+		else
 		{
-			std::cout << i + 1 << ": " << array[i] << std::endl ;
-			i++ ;
+			while (!this->empty())
+			{
+				if (this->front() == data)
+				{
+					// std::cout << "erasing " << this->front() << std::endl ;
+					this->dequeue_display() ;
+					erased++ ;
+				}
+				else
+				{
+					temp_array[j] = this->dequeue_display() ;
+					j++ ;
+				}
+			}
 		}
 
-		std::cout << std::endl ;
+		array = temp_array ;
+		ihead = 0 ;
+		count = temp_count - erased ;
+		itail = count - 1 ;
+
+		// now to resize.
+		
+		bool flag = true ;
+
+		while (flag == true) // keep resizing until it fits.
+		{
+			if (count <= arraySize / 2 && arraySize / 2 >= initialSize) // resizing array by creating new array and copying all elements over.  worst case scenario.
+			{
+				type *new_array = new type[arraySize / 2] ; // new array half sized.
+				int working_index = ihead ;
+				int i = 0 ;
+
+				while (i <= count) // copy old array to new array.  O(n).
+				{
+					new_array[i] = array[working_index] ;
+
+					if (working_index + 1 > arraySize - 1)
+						working_index = 0 ;
+
+					else
+						working_index++ ;
+
+					i++ ;
+				}
+
+				array = new_array ;
+				arraySize = arraySize / 2 ;
+				ihead = 0 ;
+				itail = count - 1 ;
+				std::cout << "erase(): array floor reached , halved array size to " << arraySize << ".  continuing erase()..."<< std::endl << std::endl ;
+			}
+
+			else
+				flag = false ;
+		}
+
+		return erased ;
 	}
 } ;
 
+#endif
