@@ -36,7 +36,7 @@ public:
 	type front() const // returns first in queue.  O(1).
 	{	
 		if (this->empty())
-			throw std::underflow_error("front(): the list is empty - underflow_error.") ;
+			throw std::underflow_error("  front():  The queue is currently empty. ") ;
 		else
 			return array[ihead] ; 
 	} 
@@ -44,7 +44,7 @@ public:
 	type back() const // returns last in queue.  O(1).
 	{	
 		if (this->empty())
-			throw std::underflow_error("back(): the list is empty - underflow_error.") ;
+			throw std::underflow_error("  back():  The queue is currently empty. ") ;
 		else
 			return array[itail] ; 
 	} 
@@ -64,11 +64,11 @@ public:
 	void display() // displays from the front to the back.  O(n).
 	{	// creates a temporary array.  copy all elements of array to temp_array via dequeue_display() , and output each element.  sets temp_array as array , and reset all indexes to starting values.
 		if (this->empty())
-			std::cout << "display(): the queue is empty and there is nothing to display." << std::endl << std::endl ;
+			std::cout << "  display():  The queue is empty and there is nothing to display." << std::endl << std::endl ;
 
 		else
 		{
-			std::cout << "display(): " << std::endl << std::endl ;
+			std::cout << "  display(): " << std::endl << std::endl ;
 
 			type *temp_array = new type[arraySize] ;
 			int k = 0 ;
@@ -80,7 +80,7 @@ public:
 			while (!this->empty())
 			{
 				temp_array[i] = this->dequeue_display() ;
-				std::cout << "    " << k + 1 << ": " << temp_array[i] << std::endl ;
+				std::cout << "    " << k + 1 << ":  " << temp_array[i] << std::endl ;
 				i++ ;
 				k++ ;
 
@@ -161,7 +161,7 @@ public:
 		type temp = array[ihead] ;
 
 		if (this->empty())
-			throw std::underflow_error("dequeue(): the list is empty - nothing to delete.") ;
+			throw std::underflow_error("  dequeue():  The queue is empty and there is nothing to dequeue.") ;
 		else
 		{
 			if (ihead + 1 > arraySize - 1)
@@ -238,12 +238,19 @@ public:
 
 	void clear() // removes all elements in queue.  resize to initial size.  O(1).
 	{
-		type *new_array = new type[initialSize] ;
-		array = new_array ;
-		arraySize = initialSize ;
-		ihead = 0 ;
-		itail = 0 ;
-		count = 0 ;
+		if (empty())
+			std::cout << "  clear():  The queue is already empty. " << std::endl << std::endl ;
+
+		else
+		{
+			type *new_array = new type[initialSize] ;
+			array = new_array ;
+			arraySize = initialSize ;
+			ihead = 0 ;
+			itail = 0 ;
+			count = 0 ;
+			std::cout << "  clear():  The queue has been cleared and reset to initial size. " << std::endl << std::endl ;
+		}
 	}
 
 	int erase(type const &data) // deletes a specific element (all of them) , follows capacity rules.  on average , O(n).

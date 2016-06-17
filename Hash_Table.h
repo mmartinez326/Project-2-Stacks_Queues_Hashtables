@@ -1,6 +1,10 @@
+#ifndef HASH_TABLE_H
+#define HASH_TABLE_H
+
 #include <iostream>
 #include <string>
 #include <typeinfo>
+#include <stdexcept>
 #include "SLinkedList.h"
 
 template<class Key, class Value> class Hash_Table
@@ -240,3 +244,5 @@ public:
 		cout << averageChainLength << endl << " --> Lower values are better." << endl;
 	}
 };
+
+#endif

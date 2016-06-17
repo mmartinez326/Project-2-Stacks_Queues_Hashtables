@@ -1,3 +1,6 @@
+#ifndef NODE_H
+#define NODE_H
+
 // Node contains key info used in preserving the contents of the hash table after resizing
 
 static int num = 0;
@@ -14,7 +17,7 @@ private:
 	template<class key, class value> friend class Hash_Table;
 
 public:
-    Node() :data(0), next(0), key(0)
+    Node() :data(0), next(0), dataKey(0)
 	{
         ID = 0;
         this->ID = ++num;
@@ -36,3 +39,5 @@ public:
     }
 
 };
+
+#endif

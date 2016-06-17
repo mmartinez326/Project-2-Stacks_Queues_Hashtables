@@ -1,6 +1,9 @@
+#ifndef SLINKEDLIST_H
+#define SLINKEDLIST_H
+
 #include "Node.h"
-#include<iostream>
-#include<cassert>
+#include <iostream>
+#include <cassert>
 using namespace std;
 
 template<class Key, class Value> class SLinkedList
@@ -137,3 +140,5 @@ public:
         head = nullptr;
     }
 };
+
+#endif

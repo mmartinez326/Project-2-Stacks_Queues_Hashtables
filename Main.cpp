@@ -1,12 +1,9 @@
-#include "DynQueue.h"
-#include "Hash_Table.h"
-#include "Stack.h"
+// Project 02 - Stack , Queue , and Hash Table
+// by:  Manuel Martinez , John Santoro , and Jim Bui
 
-#include <iostream>
-using namespace std ;
+#include "Menu_Program.h"
 
 int main () 
 {
-	// cin.get() ;
-	return 0 ;
+	Menu_Program() ;
 }

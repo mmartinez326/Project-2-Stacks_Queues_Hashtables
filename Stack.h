@@ -1,3 +1,6 @@
+#ifndef STACK_H
+#define STACK_H
+
 #include <iostream>
 #include <cmath>
 #include <stdexcept>
@@ -27,7 +30,7 @@ public:
 		//initialize
 		for (int i=0; i< arraySize; i++) 
 		{
-			this->info[i] = 0;
+			this->info[i] = ' ';
 		}
 	}
 
@@ -35,7 +38,7 @@ public:
 
 	type top() const 
 	{
-		if (top_of_array == -1) {throw underflow_error ("The Stack is empty (Location: top)");}
+		if (top_of_array == -1) {throw underflow_error ("  top():  The stack is empty.");}
 		else{return info[top_of_array];}
 	}
 
@@ -45,15 +48,20 @@ public:
 
 	void display() 
 	{
-		if (empty()) {cout << "The Stack is empty (Location: display)" << endl;}
+		int i = 1 ;
+		int j = count ;
+		if (empty()) {std::cout << "  display():  The stack is currently empty. " << std::endl << std::endl ;}
 		else {
 			Stack<type> *temp = new Stack (arraySize);
+
+			std::cout << "  display():" << std::endl << std::endl ;
 
 			while(!empty())
 			{
 				type data = pop();
-				cout << data;
+				std::cout << "    " << j - i + 1 << ": " << data << std::endl ;
 				temp->Push(data);
+				i++ ;
 			}
 			while (!temp->empty())
 			{
@@ -61,7 +69,7 @@ public:
 				this->Push(data);
 			}
 			delete temp;
-			cout << endl;
+			cout << endl ;
 
 		}
 	}
@@ -80,11 +88,11 @@ public:
 
 	type pop() 
 	{
-		if (empty()) {throw underflow_error ("The Stack is empty (Location: pop)");}
+		if (empty()) {throw underflow_error ("  pop():  The stack is empty.");}
 		else 
 		{	
 			type tmp = this->top();
-			this->info[top_of_array] = 0;
+			this->info[top_of_array] = ' ';
 			count--;
 			top_of_array--;
 			
@@ -96,7 +104,7 @@ public:
 
 	void clear() 
 	{
-		if (empty()) {cout << "The Stack is empty" << endl;}
+		if (empty()) {std::cout << "  clear():  The stack is already empty. " << std::endl << std::endl ;}
 		else {
 
 			delete [] info;
@@ -104,7 +112,7 @@ public:
 			top_of_array = -1;
 			arraySize = initialSize;
 		
-			cout << endl << "Stack size was resized to inital size" << endl;
+			std::cout << "  clear():  The stack has been cleared and reset to initial size. " << std::endl << std::endl ;
 			
 			info = new type [initialSize];
 		}
@@ -116,7 +124,7 @@ public:
 	//the size of the array is halved. Return the number of elements that were deleted. 
 int erase(type const &data) 
 	{
-		if (empty()) {throw underflow_error ("The Stack is empty (Location: erase)");}
+		if (empty()) {throw underflow_error ("  erase():  The stack is currently empty. ");}
 		else
 		{
 		int numDeleted = 0;
@@ -128,7 +136,7 @@ int erase(type const &data)
 			{
 				if (this->info[n] == data)
 				{
-					this->info[n] = 0;
+					this->info[n] = ' ' ;
 					count--;
 					top_of_array--;
 					//this->pop();
@@ -138,7 +146,7 @@ int erase(type const &data)
 				{
 					tempIndex++;
 					tmp[tempIndex] = this->info[n];
-					this->info[n] = 0;
+					this->info[n] = ' ';
 					count--;
 					top_of_array--;
 					//this->pop();
@@ -159,6 +167,7 @@ int erase(type const &data)
 	}
 
 private:
+
 void ResizeStacks(const double& n)
 {
 	if (n==1){
@@ -179,7 +188,7 @@ void ResizeStacks(const double& n)
 			//initialize new values
 			for (int i=0; i< newSize; i++) 
 			{
-				this->info[i] = 0;
+				this->info[i] = ' ';
 			}
 			copy(tmp, tmp + newSize, info);
 
@@ -206,7 +215,7 @@ void ResizeStacks(const double& n)
 			//initialize new values
 			for (int i=0; i< newSize; i++) 
 			{
-				this->info[i] = 0;
+				this->info[i] = ' ';
 			}
 			copy(tmp, tmp + arraySize, info);
 
@@ -218,3 +227,5 @@ void ResizeStacks(const double& n)
 
 	}
 };
+
+#endif
