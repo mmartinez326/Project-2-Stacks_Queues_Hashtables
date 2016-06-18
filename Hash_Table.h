@@ -1,11 +1,10 @@
-#ifndef HASH_TABLE_H
-#define HASH_TABLE_H
-
 #include <iostream>
 #include <string>
 #include <typeinfo>
 #include <stdexcept>
 #include "SLinkedList.h"
+
+using namespace std;
 
 template<class Key, class Value> class Hash_Table
 {
@@ -38,10 +37,15 @@ private:
 	{
 		if (typeid(key) == typeid(string()))
 		{
-			// return HashValString(string(key));
+			//stringstream ss;
+
+			//ss << key;
+
+			// return HashValString(ss., capacity);
+			return HashValString(((int)key), capacity);
 		}
 		else
-			return HashValNum(key, capacity);
+			return HashValNum(((int)key), capacity);
 	}
 
 	// Resizes the array of buckets if resizing is needed.
@@ -244,5 +248,3 @@ public:
 		cout << averageChainLength << endl << " --> Lower values are better." << endl;
 	}
 };
-
-#endif
