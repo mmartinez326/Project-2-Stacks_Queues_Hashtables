@@ -62,7 +62,6 @@ void Menu_Program::Main_Loop()
 			Clear() ;
 			std::cout << std::endl << "Invalid input." << std::endl << std::endl ;
 		}
-
 	}
 }
 
@@ -441,5 +440,145 @@ void Menu_Program::Queue_Loop(int size)
 
 void Menu_Program::Hash_Table_Create()
 {
-	std::cout << "  This is not yet implemented." << std::endl << std::endl ;
+	int input = 0;
+
+	while (true)
+	{
+		std::cout << "  Hash Table Menu" << std::endl << std::endl;
+		std::cout << "    1.  Create Hash Table" << std::endl;
+		std::cout << "    2.  Back" << std::endl << std::endl;
+
+		std::cin >> input; std::cin.clear(); std::cin.ignore();
+
+		if (input == 1)
+		{
+			int n = 0;
+			double loadFactorCriterion = 0;
+
+			Clear();
+			std::cout << "  Please input size of hash table." << std::endl << std::endl;
+			std::cin >> n; std::cin.clear(); std::cin.ignore();
+			std::cout << "  Please input load factor criterion of hash table." << std::endl << std::endl;
+			std::cin >> loadFactorCriterion; std::cin.clear(); std::cin.ignore();
+			Clear();
+			std::cout << "  Created hash table of size " << n << "." << std::endl << std::endl;
+
+			Hash_Table_Loop(n, loadFactorCriterion);
+			Clear();
+			break;
+		}
+
+		else if (input == 2)
+		{
+			Clear();
+			break;
+		}
+
+		else
+		{
+			Clear();
+			std::cout << std::endl << "Invalid input." << std::endl << std::endl;
+		}
+	}
+}
+
+void Menu_Program::Hash_Table_Loop(int size, double loadFactorCriterion)
+{
+	// Change to string implementation later
+	Hash_Table<int, int> hash_brown(size, loadFactorCriterion);
+	int input = 0;
+
+	while (true)
+	{
+		std::cout << "  Hash Table Menu" << std::endl << std::endl;
+		std::cout << "    1.  NumberOfDataItems()" << std::endl;
+		std::cout << "    2.  NumberOfBuckets()" << std::endl;
+		std::cout << "    3.  search()" << std::endl;
+		std::cout << "    4.  insert()" << std::endl;
+		std::cout << "    5.  erase()" << std::endl;
+		std::cout << "    6.  Display()" << std::endl;
+		std::cout << "    7.  DisplayDebugInfo()" << std::endl;
+		std::cout << "    8.  Back" << std::endl << std::endl;
+
+		std::cin >> input; std::cin.clear(); std::cin.ignore();
+
+		bool breakThis = false;
+
+		// Variables for switch loop
+		int keyInput = 0;
+		int valueInput = 0;
+
+		if (input == 1)
+		{
+			Clear();
+			cout << "Number of data items:  " << hash_brown.NumberOfDataItems() << endl;
+		}
+		else if (input == 2)
+		{
+			Clear();
+			cout << "Number of buckets:  " << hash_brown.NumberOfBuckets() << endl;
+		}
+		else if (input == 3)
+		{
+			Clear();
+			cout << "Enter key to search:  ";
+			cin >> keyInput;
+			cin.ignore();
+
+			try
+			{
+				valueInput = hash_brown.search(keyInput);
+				cout << valueInput << " found at key.";
+			}
+			catch (const underflow_error& e)
+			{
+				cerr << e.what() << endl;
+			}
+		}
+		else if (input == 4)
+		{
+			Clear();
+			cout << "Enter key to insert a value at:  ";
+			cin >> keyInput;
+			cin.ignore();
+
+			cout << "Enter desired value at key " << keyInput << ":  ";
+			cin >> valueInput;
+			cin.ignore();
+
+			hash_brown.insert(keyInput, valueInput);
+		}
+		else if (input == 5)
+		{
+			Clear();
+			cout << "Enter key to erase value at:  ";
+			cin >> keyInput;
+			hash_brown.erase(keyInput);
+		}
+		else if (input == 6)
+		{
+			Clear();
+			hash_brown.Display();
+		}
+		else if (input == 7)
+		{
+			Clear();
+			hash_brown.DisplayDebugInfo();
+		}
+		else if (input == 8)
+		{
+			Clear();
+			breakThis = true;
+		}
+		else
+		{
+			Clear();
+			std::cout << std::endl << "Invalid input." << std::endl << std::endl;
+		}
+
+		if (breakThis)
+			break; // this
+	}
+
+	// std::cout << "  This is not yet implemented." << std::endl << std::endl ;
 }

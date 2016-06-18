@@ -30,6 +30,7 @@ private:
 	void Queue_Loop(int size) ;
 
 	void Hash_Table_Create() ;
+	void Hash_Table_Loop(int size, double loadFactorCriterion);
 } ;
 
 #endif

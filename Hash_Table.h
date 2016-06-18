@@ -215,7 +215,7 @@ public:
 					if (prevPtr == nullptr)  // The current position of ptr is the head
 					{
 						bucket[hashValue].head = ptr->next;
-						cout << "Value at key " << ptr->data << " deleted" << endl;
+						cout << "Value at key " << ptr->dataKey << " deleted" << endl;
 						delete ptr;
 						ptr = bucket[hashValue].head;
 						foundValue = true;
@@ -226,7 +226,7 @@ public:
 					else  // The current position of ptr is elsewhere
 					{
 						prevPtr->next = ptr->next;
-						cout << "Value at key " << ptr->data << " deleted" << endl;
+						cout << "Value at key " << ptr->dataKey << " deleted" << endl;
 						delete ptr;
 						foundValue = true;
 						numElements--;

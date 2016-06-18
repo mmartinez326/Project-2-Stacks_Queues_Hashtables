@@ -12,6 +12,8 @@ private:
     Node<Key, Value> * head;
     int sz;
 
+	template<class key, class value> friend class Hash_Table;
+
 public:
     SLinkedList() :head(nullptr), sz(0)
 	{}
