@@ -158,7 +158,14 @@ public:
 		Node<Key, Value>* ptr = bucket[hashVal].GetHead();
 
 		if (ptr == nullptr)  // The bucket is empty
+		{
 			bucket[hashVal].insert(val, key);
+			numElements++;
+
+			// Check to see whether dynamic allocation is necessary.  (Allocate memory if so)
+			if ((double)numElements / arraySize > loadFactorCriterion)
+				ResizeBucketArray(1.3);
+		}
 		else  // Check to see whether the bucket already contains an element of the specified key
 		{
 			bool keyFound = false;
@@ -189,9 +196,52 @@ public:
 
 	void erase(const Key &key) 
 	{
-		int hashValue = GetHashValue(key);
+		int hashValue = GetHashValue(key, arraySize);
 
-		bucket[hashValue].clear();
+		// Change this code.
+		Node<Key, Value>* prevPtr = nullptr;
+		Node<Key, Value>* ptr = bucket[hashValue].GetHead();
+
+		if (ptr == nullptr)
+			cout << "The key does not contain a value." << endl;
+		else
+		{
+			bool foundValue = false;
+
+			while (ptr != nullptr)
+			{
+				if (key == ptr->dataKey)
+				{
+					if (prevPtr == nullptr)  // The current position of ptr is the head
+					{
+						bucket[hashValue].head = ptr->next;
+						cout << "Value at key " << ptr->data << " deleted" << endl;
+						delete ptr;
+						ptr = bucket[hashValue].head;
+						foundValue = true;
+						numElements--;
+						bucket[hashValue].sz--;
+						break;
+					}
+					else  // The current position of ptr is elsewhere
+					{
+						prevPtr->next = ptr->next;
+						cout << "Value at key " << ptr->data << " deleted" << endl;
+						delete ptr;
+						foundValue = true;
+						numElements--;
+						bucket[hashValue].sz--;
+						break;
+					}
+				}
+
+				 prevPtr = ptr;
+				 ptr = ptr->next;
+			}
+
+			if (!foundValue)
+				cout << "The key does not contain a value." << endl;
+		}
 	}
 
 	//Maybe use ramdom number generator for the hash function
@@ -270,7 +320,7 @@ public:
 				numBucketsFilled++;
 		}
 
-		averageChainLength /= numBucketsFilled;
+		averageChainLength = (numBucketsFilled > 0 ? averageChainLength / numBucketsFilled : 0);
 
 		cout << averageChainLength << endl << " --> Lower values are better." << endl;
 	}
