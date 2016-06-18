@@ -22,7 +22,8 @@ private:
 	// Fix this code later
 	int HashValString(const string& key, const int& capacity)
 	{
-		return (int)key[0] % arraySize;
+		int randomInt = ((25173 * (int)key[0]) + 13849) % 65536;
+		return randomInt % capacity;
 	}
 
 	int HashValNum(const int& key, const int& capacity)
@@ -42,7 +43,7 @@ private:
 			//ss << key;
 
 			// return HashValString(ss., capacity);
-			return HashValString(((int)key), capacity);
+			// return HashValString(((int)key), capacity);
 		}
 		else
 			return HashValNum(((int)key), capacity);
@@ -152,12 +153,38 @@ public:
 	// Inserts an element at the position specified by key
 	void insert(const Key &key, const Value &val) 
 	{
-		bucket[GetHashValue(key, arraySize)].insert(val, key);
-		numElements++;
+		int hashVal = GetHashValue(key, arraySize);
 
-		// Check to see whether dynamic allocation is necessary.  (Allocate memory if so)
-		if ((double)numElements / arraySize > loadFactorCriterion)
-			ResizeBucketArray(1.3);
+		Node<Key, Value>* ptr = bucket[hashVal].GetHead();
+
+		if (ptr == nullptr)  // The bucket is empty
+			bucket[hashVal].insert(val, key);
+		else  // Check to see whether the bucket already contains an element of the specified key
+		{
+			bool keyFound = false;
+
+			while (ptr != nullptr)
+			{
+				if (ptr->dataKey == key)
+				{
+					keyFound = true;
+					cout << "Key already contains value.  Unable to insert element." << endl;
+					break;
+				}
+
+				ptr = ptr->next;
+			}
+
+			if (!keyFound)
+			{
+				bucket[hashVal].insert(val, key);
+				numElements++;
+
+				// Check to see whether dynamic allocation is necessary.  (Allocate memory if so)
+				if ((double)numElements / arraySize > loadFactorCriterion)
+					ResizeBucketArray(1.3);
+			}
+		}
 	}
 
 	void erase(const Key &key) 
