@@ -86,7 +86,7 @@ public:
 		count++;
 	}
 
-		type popDisplay() 
+	type popDisplay() 
 	{
 		if (empty()) {throw underflow_error ("  pop():  The stack is empty.");}
 		else 
@@ -181,7 +181,6 @@ int erase(type const &data)
 	}
 	}
 
-private:
 
 void ResizeStacks(const double& n)
 {
@@ -195,17 +194,28 @@ void ResizeStacks(const double& n)
 		{
 			int newSize = 0;
 			newSize = (arraySize/2);
-			type *tmp;
-			tmp = new type[arraySize];
-			copy(info, info + arraySize, tmp);
+			Stack<type> *tmp = new Stack (arraySize);
+			//copy(info, info + arraySize, tmp);
+			while(!empty())
+			{
+				type data = popDisplay();
+				tmp->Push(data);
+			}
 
+			
 			info = new type[newSize];
 			//initialize new values
 			for (int i=0; i< newSize; i++) 
 			{
 				this->info[i] = ' ';
 			}
-			copy(tmp, tmp + newSize, info);
+			//copy(tmp, tmp + newSize, info);
+			while (!tmp->empty())
+			{
+				type data = tmp->popDisplay();
+				this->Push(data);
+			}
+			delete tmp;
 
 			arraySize = newSize;
 			cout << endl << "Stack size was halfed (erase)" << endl;
@@ -222,9 +232,13 @@ void ResizeStacks(const double& n)
 		{
 			int newSize = 0;
 			newSize = (arraySize * 2);
-			type *tmp;
-			tmp = new type[newSize];
-			copy(info, info + arraySize, tmp);
+			Stack<type> *tmp = new Stack (arraySize);
+			//copy(info, info + arraySize, tmp);
+			while(!empty())
+			{
+				type data = popDisplay();
+				tmp->Push(data);
+			}
 
 			info = new type[newSize];
 			//initialize new values
@@ -232,7 +246,13 @@ void ResizeStacks(const double& n)
 			{
 				this->info[i] = ' ';
 			}
-			copy(tmp, tmp + arraySize, info);
+			//copy(tmp, tmp + arraySize, info);
+			while (!tmp->empty())
+			{
+				type data = tmp->popDisplay();
+				this->Push(data);
+			}
+			delete tmp;
 
 			arraySize = newSize;
 			cout << "Stack size was doubled" << endl;
