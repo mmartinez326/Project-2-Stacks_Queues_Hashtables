@@ -58,14 +58,14 @@ public:
 
 			while(!empty())
 			{
-				type data = pop();
+				type data = popDisplay();
 				std::cout << "    " << j - i + 1 << ": " << data << std::endl ;
 				temp->Push(data);
 				i++ ;
 			}
 			while (!temp->empty())
 			{
-				type data = temp->pop();
+				type data = temp->popDisplay();
 				this->Push(data);
 			}
 			delete temp;
@@ -84,6 +84,21 @@ public:
 		top_of_array++;
 		info[top_of_array] = data;
 		count++;
+	}
+
+		type popDisplay() 
+	{
+		if (empty()) {throw underflow_error ("  pop():  The stack is empty.");}
+		else 
+		{	
+			type tmp = this->top();
+			this->info[top_of_array] = ' ';
+			count--;
+			top_of_array--;
+			
+			return tmp;
+		}
+	
 	}
 
 	type pop() 
@@ -181,7 +196,7 @@ void ResizeStacks(const double& n)
 			int newSize = 0;
 			newSize = (arraySize/2);
 			type *tmp;
-			tmp = new type[newSize];
+			tmp = new type[arraySize];
 			copy(info, info + arraySize, tmp);
 
 			info = new type[newSize];
