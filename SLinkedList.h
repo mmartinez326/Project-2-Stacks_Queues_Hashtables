@@ -63,23 +63,23 @@ public:
         // SLinkedList::printLst();
     }
 
-    void insertBefore(const Value& data, int pos)
+    void insertBefore(const Value& data, const Key& dataKey, int pos)
 	{
         if(pos<=1)
 		{
-            Node<Key, Value> *newNode = new Node<Key, Value>(data, head);
+            Node<Key, Value> *newNode = new Node<Key, Value>(data, dataKey, head);
             head = newNode;
             sz++;
 			SLinkedList::printLst();
         }
         else if(pos > sz)
 		{
-            SLinkedList::insert(data);
+            SLinkedList::insert(data, dataKey);
         }
         else
 		{
             int p =1;
-            Node<Key, Value> *newNode = new Node<Key, Value>(data);
+            Node<Key, Value> *newNode = new Node<Key, Value>(data, dataKey);
             Node<Key, Value> *ptr = head;
             while(p!=pos -1)
 			{

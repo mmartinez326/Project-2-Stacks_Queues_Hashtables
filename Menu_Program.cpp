@@ -485,7 +485,7 @@ void Menu_Program::Hash_Table_Create()
 void Menu_Program::Hash_Table_Loop(int size, double loadFactorCriterion)
 {
 	// Change to string implementation later
-	Hash_Table<int, int> hash_brown(size, loadFactorCriterion);
+	Hash_Table<string, string> hash_brown(size, loadFactorCriterion);
 	int input = 0;
 
 	while (true)
@@ -505,8 +505,8 @@ void Menu_Program::Hash_Table_Loop(int size, double loadFactorCriterion)
 		bool breakThis = false;
 
 		// Variables for switch loop
-		int keyInput = 0;
-		int valueInput = 0;
+		string keyInput = 0;
+		string valueInput = 0;
 
 		if (input == 1)
 		{

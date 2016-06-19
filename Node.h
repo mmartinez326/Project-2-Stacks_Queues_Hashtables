@@ -30,7 +30,7 @@ public:
         this->ID = ++num;
     }
 
-    Node(const Value& data, const Key& dataKey, Node * next)
+    Node(const Value& data, const Key& dataKey, Node* next)
 	{
         this->data = data;
 		this->dataKey = dataKey;

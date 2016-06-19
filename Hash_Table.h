@@ -22,14 +22,24 @@ private:
 	// Fix this code later
 	int HashValString(const string& key, const int& capacity)
 	{
-		int randomInt = ((25173 * (int)key[0]) + 13849) % 65536;
-		return randomInt % capacity;
+		int sumCharacters = 0;
+		int keyLength = key.length();
+		double factor = 500000;
+
+		for (int i = 0; i < keyLength; i++)
+		{
+			sumCharacters += (int)((double)key[i] * factor);
+			factor /= 2.07;
+		}
+
+		// int randomInt = ((25173 * (int)key[0]) + 13849) % 65536;
+		return sumCharacters % capacity;
 	}
 
-	int HashValNum(const int& key, const int& capacity)
+	int HashValNum(const Key& key, const int& capacity)
 	{
 		// Random hashing
-		int randomInt = ((25173 * key) + 13849) % 65536;
+		int randomInt = ((25173 * (int)key) + 13849) % 65536;
 		return randomInt % capacity;
 	}
 
@@ -43,10 +53,10 @@ private:
 			//ss << key;
 
 			// return HashValString(ss., capacity);
-			// return HashValString(((int)key), capacity);
+			return HashValString(key, capacity);
 		}
-		else
-			return HashValNum(((int)key), capacity);
+		// else
+			// return HashValNum(key, capacity);
 	}
 
 	// Resizes the array of buckets if resizing is needed.
@@ -64,7 +74,7 @@ private:
 			{
 				Key nodeDataKey = ptr->dataKey;
 
-				newBucket[GetHashValue(nodeDataKey, (int)(arraySize * factor))].insert(ptr->data, nodeDataKey);
+				newBucket[GetHashValue(nodeDataKey, (int)(arraySize * factor))].insertBefore(ptr->data, nodeDataKey, 0);
 
 				ptr = ptr->next;
 			}
