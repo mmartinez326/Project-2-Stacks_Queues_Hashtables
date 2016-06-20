@@ -505,8 +505,8 @@ void Menu_Program::Hash_Table_Loop(int size, double loadFactorCriterion)
 		bool breakThis = false;
 
 		// Variables for switch loop
-		string keyInput = 0;
-		string valueInput = 0;
+		string keyInput = "";
+		string valueInput = "";
 
 		if (input == 1)
 		{
